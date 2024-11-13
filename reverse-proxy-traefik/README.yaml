@@ -1,0 +1,27 @@
+## setup
+- you need to create a network to use for traeffik
+```
+ docker network create traefik
+```
+- then create an acme.json and five it ```chmod 600``` so only i can access it
+
+### to use traefin in other containers => example
+```
+version: '3'
+services:
+  nginx_test:
+    image: nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`test.yourdomain.com`)"
+      - "traefik.http.routers.nginx.entrypoints=websecure"
+      - "traefik.http.routers.nginx.tls=true"
+      - "traefik.http.routers.nginx.tls.certresolver=myresolver"
+# each route has to be unique (routers.nginx) for each container
+   networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+```
